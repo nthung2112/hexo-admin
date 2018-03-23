@@ -1,32 +1,38 @@
+var React = require('react');
+var createReactClass = require('create-react-class');
 
-var React = require('react')
+var SinceWhen = createReactClass({
+  displayName: 'SinceWhen',
 
-var SinceWhen = React.createClass({
-  componentDidMount: function () {
-    this._iv = setInterval(this.tick, 5000)
+  componentDidMount: function() {
+    this._iv = setInterval(this.tick, 5000);
   },
-  componentWillUnmount: function () {
-    clearInterval(this._iv)
+
+  componentWillUnmount: function() {
+    clearInterval(this._iv);
   },
-  getDefaultProps: function () {
+
+  getDefaultProps: function() {
     return {
       prefix: ''
-    }
+    };
   },
-  getInitialState: function () {
+
+  getInitialState: function() {
     return {
       time: this.props.time.fromNow()
-    }
+    };
   },
-  tick: function () {
-    if (!this.isMounted()) {
-      return clearInterval(this._iv)
-    }
-    this.setState({time: this.props.time.fromNow()})
-  },
-  render: function () {
-    return this.transferPropsTo(<span>{this.props.prefix + this.state.time}</span>)
-  }
-})
 
-module.exports = SinceWhen
+  tick: function() {
+    this.setState({ time: this.props.time.fromNow() });
+  },
+
+  render: function() {
+    return (
+      <span>{this.props.prefix + this.state.time}</span>
+    );
+  },
+});
+
+module.exports = SinceWhen;

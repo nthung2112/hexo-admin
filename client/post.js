@@ -1,147 +1,176 @@
-
 var DataFetcher = require('./data-fetcher');
 var api = require('./api');
-var React = require('react/addons')
-var cx = React.addons.classSet
-var Promise = require('es6-promise').Promise
-var marked = require('marked')
-var Editor = require('./editor')
-var _ = require('lodash')
-var moment = require('moment')
-var Router = require('react-router');
+var React = require('react');
+var cx = require('classnames');
+var Promise = require('es6-promise').Promise;
+var marked = require('marked');
+var Editor = require('./editor');
+var _ = require('lodash');
+var moment = require('moment');
+var Router = require('react-router-dom').BrowserRouter;
 var Confirm = require('./confirm');
+var createReactClass = require('create-react-class');
 
-var confirm = function (message, options) {
-  var cleanup, component, props, wrapper;
-  if (options == null) {
-    options = {};
-  }
+var confirm = function(message, options) {
+  // var cleanup, component, props, wrapper;
+  // if (options == null) {
+  //   options = {};
+  // }
 
-  props = $.extend({
-    message: message
-  }, options);
-  wrapper = document.body.appendChild(document.createElement('div'));
-  component = React.renderComponent(<Confirm {...props}/>, wrapper);
-  cleanup = function () {
-    React.unmountComponentAtNode(wrapper);
-    return setTimeout(function () {
-      return wrapper.remove();
-    });
-  };
+  // props = $.extend(
+  //   {
+  //     message: message
+  //   },
+  //   options
+  // );
+  // wrapper = document.body.appendChild(document.createElement('div'));
+  // component = React.renderComponent(<Confirm {...props} />, wrapper);
+  // cleanup = function() {
+  //   React.unmountComponentAtNode(wrapper);
+  //   return setTimeout(function() {
+  //     return wrapper.remove();
+  //   });
+  // };
 
-  return component.promise.always(cleanup).promise();
+  // return component.promise.always(cleanup).promise();
+  return new Promise();
 };
 
-var Post = React.createClass({
-  mixins: [DataFetcher((params) => {
-    return {
-      post: api.post(params.postId),
-      tagsCategoriesAndMetadata: api.tagsCategoriesAndMetadata(),
-      settings: api.settings()
-    }
-  })],
+var Post = createReactClass({
+  displayName: 'Post',
 
-  getInitialState: function () {
+  componentWillMount: function() {
+    this.loadData(this.props);
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    this.loadData(nextProps);
+  },
+
+  loadData: function(props) {
+    Promise.all([
+      api.post(props.match.params.postId),
+      api.tagsCategoriesAndMetadata(),
+      api.settings()
+    ]).then(values => {
+      this.setState({
+        post: values[0],
+        tagsCategoriesAndMetadata: values[1],
+        settings: values[2]
+      });
+
+      this.dataDidLoad(values[0]);
+    });
+  },
+
+  getInitialState: function() {
     return {
       updated: moment()
-    }
+    };
   },
 
-  componentDidMount: function () {
-    this._post = _.debounce((update) => {
-      var now = moment()
-      api.post(this.props.params.postId, update).then(() => {
-        this.setState({
-          updated: now
-        })
-      })
-    }, 1000, {trailing: true, loading: true})
+  componentDidMount: function() {
+    this._post = _.debounce(
+      update => {
+        var now = moment();
+        api.post(this.props.match.params.postId, update).then(() => {
+          this.setState({
+            updated: now
+          });
+        });
+      },
+      1000,
+      { trailing: true, loading: true }
+    );
   },
 
-  handleChange: function (update) {
-    var now = moment()
-    api.post(this.props.params.postId, update).then((data) => {
+  handleChange: function(update) {
+    var now = moment();
+    api.post(this.props.match.params.postId, update).then(data => {
       var state = {
         tagsCategoriesAndMetadata: data.tagsCategoriesAndMetadata,
         post: data.post,
         updated: now,
         author: data.post.author,
+        banner: data.post.banner,
+        origin: data.post.origin
+      };
+      for (var i = 0; i < data.tagsCategoriesAndMetadata.metadata.length; i++) {
+        var name = data.tagsCategoriesAndMetadata.metadata[i];
+        state[name] = data.post[name];
       }
-      for(var i=0; i<data.tagsCategoriesAndMetadata.metadata.length; i++){
-        var name = data.tagsCategoriesAndMetadata.metadata[i]
-        state[name] = data.post[name]
-      }
-      this.setState(state)
-    })
+      this.setState(state);
+    });
   },
 
-  handleChangeContent: function (text) {
+  handleChangeContent: function(text) {
     if (text === this.state.raw) {
-      return
+      return;
     }
     this.setState({
       raw: text,
       updated: null,
       rendered: marked(text)
-    })
-    this._post({_content: text})
+    });
+    this._post({ _content: text });
   },
 
-  handleChangeTitle: function (title) {
+  handleChangeTitle: function(title) {
     if (title === this.state.title) {
-      return
+      return;
     }
-    this.setState({title: title});
-    this._post({title: title})
+    this.setState({ title: title });
+    this._post({ title: title });
   },
 
-  handlePublish: function () {
-    if (!this.state.post.isDraft) return
-    api.publish(this.state.post._id).then((post) => {
-      this.setState({post: post})
+  handlePublish: function() {
+    if (!this.state.post.isDraft) return;
+    api.publish(this.state.post._id).then(post => {
+      this.setState({ post: post });
     });
   },
 
-  handleUnpublish: function () {
-    if (this.state.post.isDraft) return
-    api.unpublish(this.state.post._id).then((post) => {
-      this.setState({post: post})
+  handleUnpublish: function() {
+    if (this.state.post.isDraft) return;
+    api.unpublish(this.state.post._id).then(post => {
+      this.setState({ post: post });
     });
   },
 
-  handleRemove: function () {
+  handleRemove: function() {
     var self = this;
     return confirm('Delete this post?', {
-      description: 'This operation will move current draft into source/_discarded folder.',
+      description:
+        'This operation will move current draft into source/_discarded folder.',
       confirmLabel: 'Yes',
       abortLabel: 'No'
-    }).then(function () {
-      api.remove(self.state.post._id).then(
-        Router.transitionTo('posts')
-      );
+    }).then(function() {
+      api.remove(self.state.post._id).then(Router.transitionTo('posts'));
     });
   },
 
-  dataDidLoad: function (name, data) {
-    if (name !== 'post') return
+  dataDidLoad: function(data) {
     var parts = data.raw.split('---');
     var _slice = parts[0] === '' ? 2 : 1;
-    var raw = parts.slice(_slice).join('---').trim();
+    var raw = parts
+      .slice(_slice)
+      .join('---')
+      .trim();
     this.setState({
       title: data.title,
       initialRaw: raw,
       raw: raw,
       rendered: data.content
-    })
+    });
   },
 
-  render: function () {
-    var post = this.state.post
-    var settings = this.state.settings
+  render: function() {
+    var post = this.state.post;
+    var settings = this.state.settings;
     if (!post || !this.state.tagsCategoriesAndMetadata || !settings) {
-      return <span>Loading...</span>
+      return <span>Loading...</span>;
     }
-    return Editor({
+    var restProps = {
       post: this.state.post,
       raw: this.state.initialRaw,
       updatedRaw: this.state.raw,
@@ -158,8 +187,9 @@ var Post = React.createClass({
       onRemove: this.handleRemove,
       tagsCategoriesAndMetadata: this.state.tagsCategoriesAndMetadata,
       adminSettings: settings
-    })
-  }
+    };
+    return React.createElement(Editor, restProps);
+  },
 });
 
 module.exports = Post;

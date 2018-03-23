@@ -1,9 +1,9 @@
+var React = require('react');
+var PT = require('prop-types');
+var api = require('./api');
+var createReactClass = require('create-react-class');
 
-var React = require('react/addons')
-var PT = React.PropTypes
-var api = require('./api')
-
-var SettingsCheckbox = React.createClass({
+var SettingsCheckbox = createReactClass({
   propTypes: {
     name: PT.string.isRequired,
     label: PT.string.isRequired,
@@ -13,32 +13,31 @@ var SettingsCheckbox = React.createClass({
     onClick: PT.func
   },
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
-      checked: false,
-    }
+      checked: false
+    };
   },
 
   componentDidMount: function() {
-    var name = this.props.name
-    api.settings().then( (settings) => {
-      var checked
+    var name = this.props.name;
+    api.settings().then(settings => {
+      var checked;
       if (!settings.options) {
-        checked = false
+        checked = false;
       } else {
-        checked = !!settings.options[name]
+        checked = !!settings.options[name];
       }
-      this.setState({checked: checked})
-    })
+      this.setState({ checked: checked });
+    });
   },
 
   handleChange: function(e) {
-    var name = this.props.name
-    var addedOptions = e.target.checked ? this.props.enableOptions
-                                        : this.props.disableOptions
-    var value = e.target.checked
-    api.setSetting(name, value, addedOptions).then( (result) => {
-      console.log(result.updated)
+    var name = this.props.name;
+    var addedOptions = e.target.checked ? this.props.enableOptions : this.props.disableOptions;
+    var value = e.target.checked;
+    api.setSetting(name, value, addedOptions).then(result => {
+      console.log(result.updated);
       this.setState({
         checked: result.settings.options[name]
       });
@@ -48,7 +47,7 @@ var SettingsCheckbox = React.createClass({
   render: function() {
     return (
       <p style={this.props.style}>
-      <label>
+        <label>
           <input
             checked={this.state.checked}
             type="checkbox"
@@ -62,4 +61,4 @@ var SettingsCheckbox = React.createClass({
   }
 });
 
-module.exports = SettingsCheckbox
+module.exports = SettingsCheckbox;

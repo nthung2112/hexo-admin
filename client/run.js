@@ -1,6 +1,5 @@
-
-var admin = require('./')
-  , api = require('./api')
+var admin = require('./'),
+  api = require('./api');
 
 // for debugging
 window.React = require('react');
