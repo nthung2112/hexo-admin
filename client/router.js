@@ -19,22 +19,32 @@ module.exports = () => {
       <div className="app">
         <div className="app_header">
           <img src="logo.png" className="app_logo" />
-          <span className="app_title">Hexo Admin</span>
+          <span className="app_title">Hexo Admin NTH</span>
           <ul className="app_nav">
             <li>
-              <Link to="/posts" activeClassName="active">Posts</Link>
+              <Link to="/posts" activeClassName="active">
+                <span className="fa fa-pencil"></span>Posts
+              </Link>
             </li>
             <li>
-              <Link to="/pages" activeClassName="active">Pages</Link>
+              <Link to="/pages" activeClassName="active">
+                <span className="fa fa-file"></span>Pages
+              </Link>
             </li>
             <li>
-              <Link to="/about" activeClassName="active">About</Link>
+              <Link to="/deploy" activeClassName="active">
+                <span className="fa fa-share-square"></span>Deploy
+              </Link>
             </li>
             <li>
-              <Link to="/deploy" activeClassName="active">Deploy</Link>
+              <Link to="/settings" activeClassName="active">
+                <span className="fa fa-cog"></span>Settings
+              </Link>
             </li>
             <li>
-              <Link to="/settings" activeClassName="active">Settings</Link>
+              <Link to="/about" activeClassName="active">
+                <span className="fa fa-info-circle"></span>About
+              </Link>
             </li>
           </ul>
         </div>

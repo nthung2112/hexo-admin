@@ -20,7 +20,7 @@ var NewPage = createReactClass({
 
   componentDidUpdate: function(prevProps, prevState) {
     if (this.state.showing && !prevState.showing) {
-      var node = this.refs.input.getDOMNode();
+      var node = this.refs.input;
       node.focus();
       node.selectionStart = 0;
       node.selectionEnd = node.value.length;

@@ -64,6 +64,20 @@ var Editor = createReactClass({
     });
   },
 
+  onDownloadRaw: function() {
+    var text = this.props.post.raw;
+    var filename = this.props.post.slug + '.md';
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+  },
+
   render: function() {
     return (
       <div
@@ -86,14 +100,13 @@ var Editor = createReactClass({
                 onChange={this.props.onChange}
               />
             )}
-            <a
+            <button
               className="editor_checkGrammar"
               title="Download file raw"
-              href={this.props.post.full_source}
-              download={this.props.title}
+              onClick={this.onDownloadRaw}
             >
               <i className="fa fa-download" />
-            </a>
+            </button>
             {!this.props.isPage &&
               (this.props.isDraft ? (
                 <button className="editor_remove" title="Remove" onClick={this.props.onRemove}>

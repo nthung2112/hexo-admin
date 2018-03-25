@@ -30,7 +30,7 @@ var SinceWhen = createReactClass({
 
   render: function() {
     return (
-      <span className={this.props.className}>{this.state.time + " " + this.props.prefix}</span>
+      <span className={this.props.className}>{this.state.prefix + " " + this.props.time}</span>
     );
   },
 });

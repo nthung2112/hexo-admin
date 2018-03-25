@@ -85,7 +85,7 @@ var CheckGrammar = createReactClass({
 
   render: function() {
     var creditStyle = {
-      'margin-top': '-24px'
+      'marginTop': '-24px'
     };
     return (
       <div className="post-content editor_rendered">
