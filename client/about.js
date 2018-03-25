@@ -6,24 +6,24 @@ var About = createReactClass({
     return (
       <div className="about">
         <h1>This is the Hexo Admin Plugin</h1>
-        <p>
+        <div>
           <strong>
             Goal: Provide an awesome admin experience for managing your blog.
           </strong>
-        </p>
-        <p>
+        </div>
+        <div>
           Useful links:
           <ul>
             <li>
               <a href="http://hexo.io">Hexo site</a>
             </li>
             <li>
-              <a href="https://github.com/jaredly/hexo-admin-plugin">
+              <a href="https://github.com/nthung2112/hexo-admin">
                 Github page for this plugin
               </a>
             </li>
           </ul>
-        </p>
+        </div>
       </div>
     );
   }

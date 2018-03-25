@@ -11,7 +11,7 @@ var Router = require('react-router-dom').BrowserRouter;
 var HashRouter = require('react-router-dom').HashRouter;
 var Route = require('react-router-dom').Route;
 var Switch = require('react-router-dom').Switch;
-var Link = require('react-router-dom').Link;
+var Link = require('react-router-dom').NavLink;
 
 module.exports = () => {
   return (
@@ -22,19 +22,19 @@ module.exports = () => {
           <span className="app_title">Hexo Admin</span>
           <ul className="app_nav">
             <li>
-              <Link to="/posts">Posts</Link>
+              <Link to="/posts" activeClassName="active">Posts</Link>
             </li>
             <li>
-              <Link to="/pages">Pages</Link>
+              <Link to="/pages" activeClassName="active">Pages</Link>
             </li>
             <li>
-              <Link to="/about">About</Link>
+              <Link to="/about" activeClassName="active">About</Link>
             </li>
             <li>
-              <Link to="/deploy">Deploy</Link>
+              <Link to="/deploy" activeClassName="active">Deploy</Link>
             </li>
             <li>
-              <Link to="/settings">Settings</Link>
+              <Link to="/settings" activeClassName="active">Settings</Link>
             </li>
           </ul>
         </div>

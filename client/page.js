@@ -22,7 +22,7 @@ var Page = createReactClass({
 
   loadData: function(props) {
     Promise.all([
-      api.page(props.match.params.postId),
+      api.page(props.match.params.pageId),
       api.settings()
     ]).then(values => {
       this.setState({

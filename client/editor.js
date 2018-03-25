@@ -72,59 +72,69 @@ var Editor = createReactClass({
           'editor--draft': this.props.isDraft
         })}
       >
-        <div className="editor_top">
-          <input
-            className="editor_title"
-            value={this.props.title}
-            onChange={this.handleChangeTitle}
-          />
-          {!this.props.isPage && (
-            <ConfigDropper
-              post={this.props.post}
-              tagsCategoriesAndMetadata={this.props.tagsCategoriesAndMetadata}
-              onChange={this.props.onChange}
+        <div>
+          <div className="editor_top">
+            <input
+              className="editor_title"
+              value={this.props.title}
+              onChange={this.handleChangeTitle}
             />
-          )}
-          {!this.props.isPage &&
-            (this.props.isDraft ? (
-              <button className="editor_publish" onClick={this.props.onPublish}>
-                Publish
-              </button>
-            ) : (
-              <button className="editor_unpublish" onClick={this.props.onUnpublish}>
-                Unpublish
-              </button>
-            ))}
-          {!this.props.isPage &&
-            (this.props.isDraft ? (
-              <button className="editor_remove" title="Remove" onClick={this.props.onRemove}>
-                <i className="fa fa-trash-o" aria-hidden="true" />
-              </button>
-            ) : (
-              <button
-                className="editor_remove"
-                title="Can't Remove Published Post"
-                onClick={this.props.onRemove}
-                disabled
-              >
-                <i className="fa fa-trash-o" aria-hidden="true" />
-              </button>
-            ))}
-          {!this.props.isPage && (
-            <button
+            {!this.props.isPage && (
+              <ConfigDropper
+                post={this.props.post}
+                tagsCategoriesAndMetadata={this.props.tagsCategoriesAndMetadata}
+                onChange={this.props.onChange}
+              />
+            )}
+            <a
               className="editor_checkGrammar"
-              title="Check for Writing Improvements"
-              onClick={this.onCheckGrammar}
+              title="Download file raw"
+              href={this.props.post.full_source}
+              download={this.props.title}
             >
-              <i className="fa fa-check-circle-o" />
-            </button>
-          )}
+              <i className="fa fa-download" />
+            </a>
+            {!this.props.isPage &&
+              (this.props.isDraft ? (
+                <button className="editor_remove" title="Remove" onClick={this.props.onRemove}>
+                  <i className="fa fa-trash-o" aria-hidden="true" />
+                </button>
+              ) : (
+                <button
+                  className="editor_remove"
+                  title="Can't Remove Published Post"
+                  onClick={this.props.onRemove}
+                  disabled
+                >
+                  <i className="fa fa-trash-o" aria-hidden="true" />
+                </button>
+              ))}
+            {!this.props.isPage && (
+              <button
+                className="editor_checkGrammar"
+                title="Check for Writing Improvements"
+                onClick={this.onCheckGrammar}
+              >
+                <i className="fa fa-check-circle-o" />
+              </button>
+            )}
+            {!this.props.isPage &&
+              (this.props.isDraft ? (
+                <button className="editor_publish" onClick={this.props.onPublish}>
+                  Publish
+                </button>
+              ) : (
+                <button className="editor_unpublish" onClick={this.props.onUnpublish}>
+                  Unpublish
+                </button>
+              ))}
+          </div>
         </div>
         <div className="editor_main">
           <div className="editor_edit">
             <div className="editor_md-header">
               {this.props.updated && (
-                <SinceWhen className="editor_updated" prefix="saved " time={this.props.updated} />
+                <SinceWhen className="editor_updated" prefix="saved" time={this.props.updated} />
               )}
               <span>
                 Markdown&nbsp;&nbsp;

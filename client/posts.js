@@ -5,7 +5,6 @@ var Link = require('react-router-dom').Link;
 var Router = require('react-router-dom').BrowserRouter;
 var _ = require('lodash');
 var moment = require('moment');
-var SinceWhen = require('./since-when');
 
 var Rendered = require('./rendered');
 var DataFetcher = require('./data-fetcher');

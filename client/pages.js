@@ -4,7 +4,6 @@ var Link = require('react-router-dom').Link;
 var Router = require('react-router-dom').BrowserRouter;
 var _ = require('lodash');
 var moment = require('moment');
-var SinceWhen = require('./since-when');
 
 var Rendered = require('./rendered');
 var DataFetcher = require('./data-fetcher');
@@ -44,14 +43,14 @@ var Pages = createReactClass({
     var pages = this.state.pages.slice();
     pages.unshift(page);
     this.setState({ pages: pages });
-    this.props.history.push(`/page/${page._id}`);
+    this.props.history.push(`/pages/${page._id}`);
   },
 
   goTo: function(id, e) {
     if (e) {
       e.preventDefault();
     }
-    this.props.history.push(`/page/${id}`);
+    this.props.history.push(`/pages/${id}`);
   },
 
   render: function() {
@@ -82,7 +81,7 @@ var Pages = createReactClass({
                 <a className="posts_perma-link" target="_blank" href={rootPath + '/' + page.path}>
                   <i className="fa fa-link" />
                 </a>
-                <Link className="posts_edit-link" to={`/page/${page._id}`}>
+                <Link className="posts_edit-link" to={`/pages/${page._id}`}>
                   <i className="fa fa-pencil" />
                 </Link>
               </li>
