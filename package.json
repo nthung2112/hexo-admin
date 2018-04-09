@@ -4,6 +4,7 @@
   "description": "Admin section to the hexo server",
   "main": "index.js",
   "scripts": {
+    "build": "gulp build",
     "prepublish": "gulp build"
   },
   "repository": {
