@@ -47,7 +47,7 @@ var Posts = createReactClass({
     var posts = this.state.posts.slice();
     posts.unshift(post);
     this.setState({ posts: posts });
-    this.props.history.push(`/post/${page._id}`);
+    this.props.history.push(`/post/${post._id}`);
   },
 
   goTo: function(id, e) {

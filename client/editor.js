@@ -146,13 +146,13 @@ var Editor = createReactClass({
         <div className="editor_main">
           <div className="editor_edit">
             <div className="editor_md-header">
+              <span className="editor_filename">
+                <span>Markdown </span>
+                <RenameFile post={this.props.post} handlePreviewLink={this.handlePreviewLink} />
+              </span>
               {this.props.updated && (
                 <SinceWhen className="editor_updated" prefix="saved" time={this.props.updated} />
               )}
-              <span>
-                Markdown&nbsp;&nbsp;
-                <RenameFile post={this.props.post} handlePreviewLink={this.handlePreviewLink} />
-              </span>
             </div>
             <CodeMirror
               onScroll={this.handleScroll}

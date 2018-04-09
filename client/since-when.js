@@ -4,6 +4,12 @@ var createReactClass = require('create-react-class');
 var SinceWhen = createReactClass({
   displayName: 'SinceWhen',
 
+  getDefaultProps: function() {
+    return {
+      prefix: ''
+    };
+  },
+
   componentDidMount: function() {
     this._iv = setInterval(this.tick, 5000);
   },
@@ -11,12 +17,7 @@ var SinceWhen = createReactClass({
   componentWillUnmount: function() {
     clearInterval(this._iv);
   },
-
-  getDefaultProps: function() {
-    return {
-      prefix: ''
-    };
-  },
+  
 
   getInitialState: function() {
     return {
@@ -30,7 +31,7 @@ var SinceWhen = createReactClass({
 
   render: function() {
     return (
-      <span className={this.props.className}>{this.state.prefix + " " + this.props.time}</span>
+      <span className={this.props.className}>{this.state.time + " " + this.props.prefix}</span>
     );
   },
 });
