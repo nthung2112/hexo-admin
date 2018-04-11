@@ -52,10 +52,7 @@ var RenameFile = createReactClass({
       var rootPath = url.slice(0, url.indexOf('admin')).join('/');
       var previewLink = path.join(rootPath, result.path);
 
-      this.setState(
-        { filename: editingName, editing: false },
-        this.props.handlePreviewLink(previewLink)
-      );
+      this.setState({ filename: editingName, editing: false }, this.props.handlePreviewLink(previewLink));
     });
   },
 
@@ -70,40 +67,24 @@ var RenameFile = createReactClass({
   },
 
   render: function() {
-    return (
-      <div className="fileRename">
-        {!this.state.editing && (
-          <div
-            className="fileRename_display"
-            title="Click to rename"
-            onClick={this.toggleEditing}
-          >
-            {this.state.filename}
-          </div>
-        )}
-        {this.state.editing && (
-          <span>
-            <input
-              type="text"
-              onChange={this.handleEditChange}
-              onKeyDown={this.handleKeyPress}
-              defaultValue={this.state.editingName}
-            />
-            <span className="fileRename_buttons">
-              <i
-                title="Cancel"
-                className="fa fa-times"
-                onClick={this.toggleEditing}
-              />
-              <i
-                title="Rename File"
-                className="fa fa-check"
-                onClick={this.handleRenameFile}
-              />
-            </span>
-          </span>
-        )}
+    return !this.state.editing ? (
+      <div className="fileRename" title="Click to rename" onClick={this.toggleEditing}>
+        {this.state.filename}
       </div>
+    ) : (
+      <span className="fileRename_edit">
+        <input
+          type="text"
+          className="fileRename_input"
+          onChange={this.handleEditChange}
+          onKeyDown={this.handleKeyPress}
+          defaultValue={this.state.editingName}
+        />
+        <span className="fileRename_buttons">
+          <i title="Cancel" className="fa fa-times" onClick={this.toggleEditing} />
+          <i title="Rename File" className="fa fa-check" onClick={this.handleRenameFile} />
+        </span>
+      </span>
     );
   }
 });

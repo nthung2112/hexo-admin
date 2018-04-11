@@ -10,6 +10,8 @@ var Rendered = require('./rendered');
 var CheckGrammar = require('./check-grammar');
 var ConfigDropper = require('./config-dropper');
 var RenameFile = require('./rename-file');
+var Portal = require('./portal');
+var Confirm = require('./confirm');
 var createReactClass = require('create-react-class');
 
 var Editor = createReactClass({
@@ -35,7 +37,8 @@ var Editor = createReactClass({
     rootPath = rootPath === '' ? '/' : rootPath;
     return {
       previewLink: path.join(rootPath, this.props.post.path),
-      checkingGrammar: false
+      checkingGrammar: false,
+      showConfirm: false
     };
   },
 
@@ -78,6 +81,18 @@ var Editor = createReactClass({
     document.body.removeChild(element);
   },
 
+  handleRemove: function() {
+    this.setState(prevState => ({
+      showConfirm: !prevState.showConfirm
+    }))
+  },
+
+  hideConfirm: function() {
+    this.setState({
+      showConfirm: false
+    })
+  },
+
   render: function() {
     return (
       <div
@@ -109,14 +124,14 @@ var Editor = createReactClass({
             </button>
             {!this.props.isPage &&
               (this.props.isDraft ? (
-                <button className="editor_remove" title="Remove" onClick={this.props.onRemove}>
+                <button className="editor_remove" title="Remove" onClick={this.handleRemove}>
                   <i className="fa fa-trash-o" aria-hidden="true" />
                 </button>
               ) : (
                 <button
                   className="editor_remove"
                   title="Can't Remove Published Post"
-                  onClick={this.props.onRemove}
+                  onClick={this.handleRemove}
                   disabled
                 >
                   <i className="fa fa-trash-o" aria-hidden="true" />
@@ -147,8 +162,10 @@ var Editor = createReactClass({
           <div className="editor_edit">
             <div className="editor_md-header">
               <span className="editor_filename">
-                <span>Markdown </span>
-                <RenameFile post={this.props.post} handlePreviewLink={this.handlePreviewLink} />
+                <div className="filename_display">
+                  <span className="filename_mark">Markdown</span>
+                  <RenameFile post={this.props.post} handlePreviewLink={this.handlePreviewLink} />
+                </div>
               </span>
               {this.props.updated && (
                 <SinceWhen className="editor_updated" prefix="saved" time={this.props.updated} />
@@ -164,11 +181,17 @@ var Editor = createReactClass({
           </div>
           <div className="editor_display">
             <div className="editor_display-header">
-              <span className="editor_word-count">{this.props.wordCount} words</span>
-              Preview{' '}
-              <a className="editor_perma-link" href={this.state.previewLink} target="_blank">
-                <i className="fa fa-link" /> {this.state.previewLink}
-              </a>
+              <div className="editor_display-name">
+                <div className="editor_filename">
+                  <div className="filename_display">
+                    <span className="filename_mark">Preview</span>
+                    <a className="editor_perma-link fileRename" href={this.state.previewLink} target="_blank">
+                      <i className="fa fa-link" /> {this.state.previewLink}
+                    </a>
+                  </div>
+                </div>
+                <span className="editor_word-count">{this.props.wordCount} words</span>
+              </div>
             </div>
             {!this.state.checkingGrammar && (
               <Rendered ref="rendered" className="editor_rendered" text={this.props.rendered} />
@@ -178,6 +201,19 @@ var Editor = createReactClass({
             )}
           </div>
         </div>
+
+        {this.state.showConfirm && (
+          <Portal>
+            <Confirm
+              abortLabel={'No'}
+              confirmLabel={'Yes'}
+              description={'This operation will move current draft into source/_discarded folder.'}
+              message={'Delete this post?'}
+              onAccept={this.props.onRemove}
+              onReject={this.hideConfirm}
+            />
+          </Portal>
+        )}
       </div>
     );
   },

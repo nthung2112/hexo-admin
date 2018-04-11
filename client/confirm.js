@@ -7,21 +7,22 @@ var Confirm = createReactClass({
   getDefaultProps: function() {
     return {
       confirmLabel: 'OK',
-      abortLabel: 'Cancel'
+      abortLabel: 'Cancel',
+      onAccept: () => {},
+      onReject: () => {}
     };
   },
 
   abort: function() {
-    return this.promise.reject();
+    return this.props.onReject();
   },
 
   confirm: function() {
-    return this.promise.resolve();
+    return this.props.onAccept();
   },
 
   componentDidMount: function() {
-    this.promise = new $.Deferred();
-    return this.refs.confirm.getDOMNode().focus();
+    return this.refs.confirm.focus();
   },
 
   render: function() {

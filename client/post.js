@@ -1,6 +1,7 @@
 var DataFetcher = require('./data-fetcher');
 var api = require('./api');
 var React = require('react');
+var ReactDOM = require('react-dom');
 var cx = require('classnames');
 var Promise = require('es6-promise').Promise;
 var marked = require('marked');
@@ -8,33 +9,7 @@ var Editor = require('./editor');
 var _ = require('lodash');
 var moment = require('moment');
 var Router = require('react-router-dom').BrowserRouter;
-var Confirm = require('./confirm');
 var createReactClass = require('create-react-class');
-
-var confirm = function(message, options) {
-  // var cleanup, component, props, wrapper;
-  // if (options == null) {
-  //   options = {};
-  // }
-
-  // props = $.extend(
-  //   {
-  //     message: message
-  //   },
-  //   options
-  // );
-  // wrapper = document.body.appendChild(document.createElement('div'));
-  // component = React.renderComponent(<Confirm {...props} />, wrapper);
-  // cleanup = function() {
-  //   React.unmountComponentAtNode(wrapper);
-  //   return setTimeout(function() {
-  //     return wrapper.remove();
-  //   });
-  // };
-
-  // return component.promise.always(cleanup).promise();
-  return new Promise();
-};
 
 var Post = createReactClass({
   displayName: 'Post',
@@ -48,11 +23,7 @@ var Post = createReactClass({
   },
 
   loadData: function(props) {
-    Promise.all([
-      api.post(props.match.params.postId),
-      api.tagsCategoriesAndMetadata(),
-      api.settings()
-    ]).then(values => {
+    Promise.all([api.post(props.match.params.postId), api.tagsCategoriesAndMetadata(), api.settings()]).then(values => {
       this.setState({
         post: values[0],
         tagsCategoriesAndMetadata: values[1],
@@ -138,15 +109,7 @@ var Post = createReactClass({
   },
 
   handleRemove: function() {
-    var self = this;
-    return confirm('Delete this post?', {
-      description:
-        'This operation will move current draft into source/_discarded folder.',
-      confirmLabel: 'Yes',
-      abortLabel: 'No'
-    }).then(function() {
-      api.remove(self.state.post._id).then(Router.transitionTo('posts'));
-    });
+    api.remove(this.state.post._id).then(this.props.history.push('/posts'));
   },
 
   dataDidLoad: function(data) {
@@ -189,7 +152,7 @@ var Post = createReactClass({
       adminSettings: settings
     };
     return React.createElement(Editor, restProps);
-  },
+  }
 });
 
 module.exports = Post;
