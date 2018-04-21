@@ -1,8 +1,8 @@
 var path = require('path');
 var fs = require('hexo-fs');
 var yml = require('js-yaml');
-var deepAssign = require('deep-assign');
-var extend = require('extend');
+var merge = require('lodash/merge');
+var assignIn = require('lodash/assignIn');
 var updateAny = require('./update'),
   updatePage = updateAny.bind(null, 'Page'),
   update = updateAny.bind(null, 'Post'),
@@ -205,7 +205,7 @@ module.exports = function(app, hexo) {
 
     var addedOptions = addedOptsExist ? req.body.addedOptions : 'no additional options';
     if (addedOptsExist) {
-      settings = deepAssign(settings, addedOptions);
+      settings = merge(settings, addedOptions);
     }
     hexo.log.d('set', name, '=', value, 'with', JSON.stringify(addedOptions));
 
@@ -310,7 +310,7 @@ module.exports = function(app, hexo) {
       date: new Date(),
       author: hexo.config.author
     };
-    extend(postParameters, hexo.config.metadata || {});
+    assignIn(postParameters, hexo.config.metadata || {});
     hexo.post
       .create(postParameters)
       .error(function(err) {

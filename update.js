@@ -2,7 +2,7 @@ var path = require('path'),
   moment = require('moment'),
   hfm = require('hexo-front-matter'),
   fs = require('hexo-fs'),
-  extend = require('extend');
+  assignIn = require('lodash/assignIn');
 //  yfm = util.yfm,
 //  escape = util.escape;
 
@@ -32,16 +32,7 @@ module.exports = function(model, id, update, callback, hexo) {
     frontMatter = split.data;
   compiled = hfm.parse([frontMatter, '---', split.content].join('\n'));
 
-  var preservedKeys = [
-    'title',
-    'date',
-    'tags',
-    'categories',
-    '_content',
-    'author',
-    'banner',
-    'origin'
-  ];
+  var preservedKeys = ['title', 'date', 'tags', 'categories', '_content', 'author', 'banner', 'origin'];
   Object.keys(hexo.config.metadata || {}).forEach(function(key) {
     preservedKeys.push(key);
   });
@@ -74,7 +65,7 @@ module.exports = function(model, id, update, callback, hexo) {
     delete update.categories;
   }
 
-  extend(post, update);
+  assignIn(post, update);
 
   post.save(function() {
     //  console.log(post.full_source, post.source)

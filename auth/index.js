@@ -33,7 +33,7 @@ module.exports = function(app, hexo) {
         }
       });
     } else {
-      serveStatic(path.join(__dirname, '../www', 'login'))(req, res);
+      serveStatic(path.join(__dirname, '../dist', 'login'))(req, res);
     }
   });
   app.use(hexo.config.root + 'admin/', function(req, res, next) {
