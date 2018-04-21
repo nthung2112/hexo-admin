@@ -3,7 +3,8 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   mode: 'development',
-  entry: './client/run.js',
+  devtool: 'source-map',
+  entry: './client/index.js',
   output: {
     filename: 'bundle.js',
     path: path.join(__dirname, 'dist/')
@@ -16,7 +17,7 @@ module.exports = {
         exclude: path.resolve(__dirname, 'node_modules/')
       },
       {
-        test: /\.less$/,
+        test: /\.(less|css)$/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [

@@ -21,10 +21,10 @@ body > div:first-of-type {
 
 .app_header {
   background-color: @primaryVeryDark;
-  height: 52px;
 
   &, a {
     color: @primaryDarkText;
+    text-decoration: none;
   }
 }
 
@@ -71,6 +71,19 @@ body > div:first-of-type {
   display: flex;
   flex: 1 1 auto;
   min-height: 0;
+}
+
+.app_posts {
+  padding: 0 15px;
+  overflow: auto;
+
+  .react-bs-table table {
+    margin: 0;
+  }
+
+  a {
+    text-decoration: none;
+  }
 }
 
 ::-webkit-scrollbar {
