@@ -1818,7 +1818,71 @@ var BasicTable = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (BasicTable.__proto__ || Object.getPrototypeOf(BasicTable)).call(this));
 
-    _this.state = { posts: [] };
+    _this.handleSaveBtnClick = function (onModalClose) {
+      _api2.default.newPost(_this.inputRef.value).then(function (post) {
+        onModalClose();
+        _this.props.history.push('/post/' + post._id);
+      });
+    };
+
+    _this.setInputRef = function (element) {
+      _this.inputRef = element;
+    };
+
+    _this.createCustomModal = function (onModalClose, onSave, columns, validateState) {
+      return _react2.default.createElement(
+        'div',
+        { className: 'modal-content' },
+        _react2.default.createElement(
+          'div',
+          { className: 'modal-header ' },
+          _react2.default.createElement(
+            'h4',
+            { className: 'modal-title' },
+            'Please input post title'
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'modal-body' },
+          _react2.default.createElement('input', {
+            autoFocus: true,
+            type: 'text',
+            placeholder: 'Title',
+            className: 'form-control',
+            ref: _this.setInputRef
+          })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'modal-footer' },
+          _react2.default.createElement(
+            'button',
+            { type: 'button', className: 'btn btn-default btn-secondary', onClick: onModalClose },
+            'Cancel'
+          ),
+          _react2.default.createElement(
+            'button',
+            {
+              type: 'button',
+              className: 'btn btn-primary',
+              onClick: function onClick() {
+                return _this.handleSaveBtnClick(onModalClose);
+              }
+            },
+            'Create Post'
+          )
+        )
+      );
+    };
+
+    _this.handleConfirmDeleteRow = function (onDelete, selectedRows) {
+      if (confirm('Are you sure you want to delete post ?')) {
+        _api2.default.remove(selectedRows[0]).then(onDelete());
+      }
+    };
+
+    _this.state = { posts: [], selectedRows: [] };
     return _this;
   }
 
@@ -1847,22 +1911,20 @@ var BasicTable = function (_Component) {
   }, {
     key: 'formatDate',
     value: function formatDate(cell, row) {
-      return (0, _moment2.default)(cell).format("hh:mm:ss DD-MM-YYYY");
+      return (0, _moment2.default)(cell).format('hh:mm:ss DD-MM-YYYY');
     }
   }, {
     key: 'render',
     value: function render() {
-      function onAfterDeleteRow(rowKeys) {
-        alert('The rowkey you drop: ' + rowKeys);
-      }
-
       var options = {
-        afterDeleteRow: onAfterDeleteRow // A hook for after droping rows.
-      };
-
-      // If you want to enable deleteRow, you must enable row selection also.
-      var selectRowProp = {
-        mode: 'checkbox'
+        deleteBtn: function deleteBtn() {
+          return _react2.default.createElement(DeleteButton, { btnText: 'Delete Post' });
+        },
+        insertBtn: function insertBtn() {
+          return _react2.default.createElement(InsertButton, { btnText: 'Create New Post' });
+        },
+        insertModal: this.createCustomModal,
+        handleConfirmDeleteRow: this.handleConfirmDeleteRow
       };
 
       return _react2.default.createElement(
@@ -1875,10 +1937,23 @@ var BasicTable = function (_Component) {
         ),
         _react2.default.createElement(
           _reactBootstrapTable.BootstrapTable,
-          { data: this.state.posts, pagination: true, search: true, selectRow: selectRowProp, options: options },
+          {
+            search: true,
+            pagination: true,
+            insertRow: true,
+            deleteRow: true,
+            options: options,
+            data: this.state.posts,
+            selectRow: { mode: 'radio' }
+          },
           _react2.default.createElement(
             _reactBootstrapTable.TableHeaderColumn,
-            { dataField: 'title', isKey: true, searchable: false, dataFormat: this.linkFormatter },
+            { dataField: '_id', searchable: false, isKey: true, hidden: true },
+            'ID'
+          ),
+          _react2.default.createElement(
+            _reactBootstrapTable.TableHeaderColumn,
+            { dataField: 'title', dataFormat: this.linkFormatter },
             'Title'
           ),
           _react2.default.createElement(
@@ -3107,10 +3182,10 @@ function Routers() {
       _react2.default.createElement(
         'div',
         { className: 'app_header' },
-        _react2.default.createElement('img', { src: 'logo.png', className: 'app_logo' }),
         _react2.default.createElement(
           _reactRouterDom.NavLink,
           { to: '/' },
+          _react2.default.createElement('img', { src: 'logo.png', className: 'app_logo' }),
           _react2.default.createElement(
             'span',
             { className: 'app_title' },
@@ -31979,10 +32054,10 @@ utils.intFromLE = intFromLE;
 /*!********************************************!*\
   !*** ./node_modules/elliptic/package.json ***!
   \********************************************/
-/*! exports provided: _args, _development, _from, _id, _inBundle, _integrity, _location, _phantomChildren, _requested, _requiredBy, _resolved, _spec, _where, author, bugs, dependencies, description, devDependencies, files, homepage, keywords, license, main, name, repository, scripts, version, default */
+/*! exports provided: _from, _id, _inBundle, _integrity, _location, _phantomChildren, _requested, _requiredBy, _resolved, _shasum, _spec, _where, author, bugs, bundleDependencies, dependencies, deprecated, description, devDependencies, files, homepage, keywords, license, main, name, repository, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"_args":[["elliptic@6.4.0","C:\\Users\\hungtannguyen\\Desktop\\nth-blogs\\node_modules\\hexo-admin-nth"]],"_development":true,"_from":"elliptic@6.4.0","_id":"elliptic@6.4.0","_inBundle":false,"_integrity":"sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@6.4.0","name":"elliptic","escapedName":"elliptic","rawSpec":"6.4.0","saveSpec":null,"fetchSpec":"6.4.0"},"_requiredBy":["/browserify-sign","/create-ecdh"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz","_spec":"6.4.0","_where":"C:\\Users\\hungtannguyen\\Desktop\\nth-blogs\\node_modules\\hexo-admin-nth","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.0"};
+module.exports = {"_from":"elliptic@^6.0.0","_id":"elliptic@6.4.0","_inBundle":false,"_integrity":"sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"range","registry":true,"raw":"elliptic@^6.0.0","name":"elliptic","escapedName":"elliptic","rawSpec":"^6.0.0","saveSpec":null,"fetchSpec":"^6.0.0"},"_requiredBy":["/browserify-sign","/create-ecdh"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz","_shasum":"cac9af8762c85836187003c8dfe193e5e2eae5df","_spec":"elliptic@^6.0.0","_where":"C:\\Users\\TanHung\\Desktop\\nth-blogs\\node_modules\\hexo-admin\\node_modules\\browserify-sign","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"bundleDependencies":false,"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"deprecated":false,"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.0"};
 
 /***/ }),
 

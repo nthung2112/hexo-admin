@@ -15,8 +15,8 @@ function Routers() {
     <HashRouter>
       <div className="app">
         <div className="app_header">
-          <img src="logo.png" className="app_logo" />
           <Link to="/">
+            <img src="logo.png" className="app_logo" />
             <span className="app_title">Hexo Admin NTH</span>
           </Link>
           <ul className="app_nav">

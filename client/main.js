@@ -8,19 +8,14 @@ import api from './api';
 export default class BasicTable extends Component {
   constructor() {
     super();
-    this.state = { posts: [] };
+    this.state = { posts: [], selectedRows: [] };
   }
 
   componentDidMount() {
     api
       .posts()
       .then(posts =>
-        _.sortBy(
-          _.filter(posts, function(post) {
-            return !post.isDiscarded;
-          }),
-          ['isDraft', 'date']
-        ).reverse()
+        _.sortBy(_.filter(posts, post => !post.isDiscarded), ['isDraft', 'date']).reverse()
       )
       .then(data => {
         this.setState({ posts: data });
@@ -32,28 +27,81 @@ export default class BasicTable extends Component {
   }
 
   formatDate(cell, row) {
-    return moment(cell).format("hh:mm:ss DD-MM-YYYY");
+    return moment(cell).format('hh:mm:ss DD-MM-YYYY');
   }
 
-  render() {
-    function onAfterDeleteRow(rowKeys) {
-      alert('The rowkey you drop: ' + rowKeys);
+  handleSaveBtnClick = onModalClose => {
+    api.newPost(this.inputRef.value).then(post => {
+      onModalClose();
+      this.props.history.push(`/post/${post._id}`);
+    });
+  };
+
+  setInputRef = element => {
+    this.inputRef = element;
+  };
+
+  createCustomModal = (onModalClose, onSave, columns, validateState) => {
+    return (
+      <div className="modal-content">
+        <div className="modal-header ">
+          <h4 className="modal-title">Please input post title</h4>
+        </div>
+        <div className="modal-body">
+          <input
+            autoFocus
+            type="text"
+            placeholder="Title"
+            className="form-control"
+            ref={this.setInputRef}
+          />
+        </div>
+        <div className="modal-footer">
+          <button type="button" className="btn btn-default btn-secondary" onClick={onModalClose}>
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => this.handleSaveBtnClick(onModalClose)}
+          >
+            Create Post
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  handleConfirmDeleteRow = (onDelete, selectedRows) => {
+    if (confirm('Are you sure you want to delete post ?')) {
+      api.remove(selectedRows[0]).then(onDelete());
     }
+  };
 
+  render() {
     const options = {
-      afterDeleteRow: onAfterDeleteRow // A hook for after droping rows.
-    };
-
-    // If you want to enable deleteRow, you must enable row selection also.
-    const selectRowProp = {
-      mode: 'checkbox'
+      deleteBtn: () => <DeleteButton btnText="Delete Post" />,
+      insertBtn: () => <InsertButton btnText="Create New Post" />,
+      insertModal: this.createCustomModal,
+      handleConfirmDeleteRow: this.handleConfirmDeleteRow
     };
 
     return (
       <div className="app_posts">
         <h3>Posts</h3>
-        <BootstrapTable data={this.state.posts} pagination search selectRow={selectRowProp} options={options}>
-          <TableHeaderColumn dataField="title" isKey searchable={false} dataFormat={this.linkFormatter}>
+        <BootstrapTable
+          search
+          pagination
+          insertRow
+          deleteRow
+          options={options}
+          data={this.state.posts}
+          selectRow={{ mode: 'radio' }}
+        >
+          <TableHeaderColumn dataField="_id" searchable={false} isKey hidden>
+            ID
+          </TableHeaderColumn>
+          <TableHeaderColumn dataField="title" dataFormat={this.linkFormatter}>
             Title
           </TableHeaderColumn>
           <TableHeaderColumn dataField="author" dataSort>
