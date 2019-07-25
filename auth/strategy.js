@@ -1,4 +1,4 @@
-var bcrypt = require('bcrypt-nodejs');
+var bcrypt = require('bcryptjs');
 
 module.exports = function(hexo) {
   this.name = 'adminAuth';

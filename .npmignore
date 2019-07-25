@@ -1,0 +1,8 @@
+# standard ignores
+node_modules/
+
+# ignore config
+.babelrc
+.gitignore
+.jshintrc
+webpack.config.js

@@ -1,5 +1,5 @@
 var React = require('react');
-var bcrypt = require('bcrypt-nodejs');
+var bcrypt = require('bcryptjs');
 var createReactClass = require('create-react-class');
 
 var AdminYaml = createReactClass({
